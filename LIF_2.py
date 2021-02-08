@@ -25,7 +25,7 @@ def make_spikes(start,end,period,duration=100,step=0.1):
 
 # %% LIF CUBA
 
-def LIF_CUBA(spikes=np.zeros(1),duration=100,step=0.1,cm=1,tau_m=20,I_ext=0,
+def LIF_CUBA(spikes=np.zeros(1),duration=100,step=0.1,cm=1,tau_m=20,tau_syn=5,I_ext=0,
             E_rest=-65,v_reset=-65,tau_refrac=0.1,v_thresh=-50):
 
     ''' 
@@ -44,7 +44,7 @@ def LIF_CUBA(spikes=np.zeros(1),duration=100,step=0.1,cm=1,tau_m=20,I_ext=0,
     for t in range(int(duration/step)):
         
         # Incoming Spikes
-        di_syn = (-I_syn/tau_m)*step
+        di_syn = (-I_syn/tau_syn)*step
         I_syn  += di_syn
         
         if np.any(spikes):
@@ -115,7 +115,7 @@ def LIF_COBA(spikes_e=np.zeros(1),spikes_i=np.zeros(1),duration=100,step=0.1,cm=
         
         if np.any(spikes_e):
             if spikes_e[t]:
-                g_syn_e += cm/tau_syn_e 
+                g_syn_e += w
             
         # Incoming Inhibitory Spikes
         dg_syn_i = (-g_syn_i/tau_syn_i)*step
@@ -123,7 +123,7 @@ def LIF_COBA(spikes_e=np.zeros(1),spikes_i=np.zeros(1),duration=100,step=0.1,cm=
         
         if np.any(spikes_i):
             if spikes_i[t]:
-                g_syn_i += 1
+                g_syn_i += w
 
         # Refractory Period
         if 1 in s_vec[-(int(tau_refrac/step)):]:
@@ -131,7 +131,7 @@ def LIF_COBA(spikes_e=np.zeros(1),spikes_i=np.zeros(1),duration=100,step=0.1,cm=
 
         # Changing Voltage
         else:
-            du = (((g1*(E_rest - u)) + g_syn_e*(E_rev_e-u) + w*g_syn_i*(E_rev_i-u)) / cm)*step
+            du = (((g1*(E_rest - u)) + g_syn_e*(E_rev_e-u) + g_syn_i*(E_rev_i-u)) / cm)*step
             u += du
         
         # Spiking
@@ -165,18 +165,16 @@ def LIF_COBA(spikes_e=np.zeros(1),spikes_i=np.zeros(1),duration=100,step=0.1,cm=
 
     return ge_vec, gi_vec, u_vec, s_vec
 
-    
 # %% Simulation
 
-spikes_e = make_spikes(20,22,3)
+spikes_e = make_spikes(50,52,30)
 spikes_i = make_spikes(70,72,3)
 
-# COBA
-ge_vec, gi_vec, u_vec, s_vec = LIF_COBA(spikes_e=spikes_e,tau_syn_e=5)
+# %%COBA
+ge_vec, gi_vec, u_vec, s_vec = LIF_COBA(spikes_e=spikes_e)
 
-# CUBA
+# %%CUBA
 I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e)
-
 
 # %% PyNN CUBA
 # Setup
@@ -210,11 +208,10 @@ plt.plot(v_cuba)
 # End
 sim.end()
 
-# PyNN COBA
-
+# %% PyNN COBA
 # Setup
 sim.setup(timestep=0.1, min_delay=0.1, max_delay=10.0)
-IF_sim = sim.Population(1, sim.IF_cond_exp(), label="IF_curr_exp")
+IF_sim = sim.Population(1, sim.IF_cond_exp(), label="IF_cond_exp")
 IF_sim.record('v')
 
 w = 0.016
