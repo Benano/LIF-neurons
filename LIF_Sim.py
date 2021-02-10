@@ -4,29 +4,22 @@
 # %% Classes
 
 class sim:
-    def __init__(self,increment,neurons=None): #input & output
+    def __init__(self,increment): #input & output
         self.increment = increment
 
     neurons = []
-    rec_var = []
 
     def add_neuron(self,neuron):
         self.neurons.append(neuron)
-
-    def record(self,var):
-        self.rec_var.append(var)
         
     def run(self,duration):
-
         # MS conversion
         steps = int(duration/self.increment)
-
         for i in range(steps):
-            for neuron in neurons:
+            for neuron in sim.neurons:
                 neuron.update(self.increment)
 
-
-class neuron():
+class neuron(sim):
     def __init__(self,tau_m=20,cm=1,tau_syn=5,E_rest=-65,v_reset=-65,tau_refrac=0.1,v_thresh=-50, I_ext=0): # Attributes shared by all
         self.tau_m = tau_m
         self.cm = cm
@@ -39,19 +32,23 @@ class neuron():
         self.u = E_rest
         self.g1 = self.cm/self.tau_m
 
+
     def update(self,increment):
-        du = (((self.g1*(self.E_rest - self.u)) + self.I_ext) / self.cm)*self.step
+        du = (((self.g1*(self.E_rest - self.u)) + self.I_ext) / self.cm)* increment
         self.u += du
         
         # Spike
         if self.u >= self.v_thresh:
             self.u = self.v_reset
+        
+    rec_var =[]
+    def record(self):
+        pass
 
 
-sim1 = sim(100,0.1)
-n1 = neuron()
+sim1 = sim(0.1)
+n1 = neuron(I_ext=1)
 sim1.add_neuron(n1)
-sim1.record(v)
 sim1.run(10)
 
 # %% 
@@ -77,3 +74,15 @@ class lif_cuba(neuron):
                 yield neuron
 
     def record()
+
+# %% Dictionaries
+
+a = {}
+a['hello'] = [1]
+a['breh'] = [5]
+a['cool'] = [3]
+
+
+
+
+# %%
