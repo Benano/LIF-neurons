@@ -1,8 +1,7 @@
 # %% Simulation of LIF neuron interactions
-
+import matplotlib.pyplot as plt
 
 # %% Classes
-
 class sim:
     def __init__(self,increment): #input & output
         self.increment = increment
@@ -32,6 +31,7 @@ class neuron(sim):
         self.u = E_rest
         self.g1 = self.cm/self.tau_m
 
+        self.u_series = []
 
     def update(self,increment):
         du = (((self.g1*(self.E_rest - self.u)) + self.I_ext) / self.cm)* increment
@@ -41,15 +41,16 @@ class neuron(sim):
         if self.u >= self.v_thresh:
             self.u = self.v_reset
         
-    rec_var =[]
+        self.u_series.append(self.u)
+
     def record(self):
         pass
-
 
 sim1 = sim(0.1)
 n1 = neuron(I_ext=1)
 sim1.add_neuron(n1)
-sim1.run(10)
+
+sim1.run(100)
 
 # %% 
 class lif_cuba(neuron):
@@ -57,32 +58,4 @@ class lif_cuba(neuron):
         super().__init__(tau_m,cm,tau_syn,E_rest,v_reset,tau_refrac,v_thresh)
 
 
-    def inject_current(self,strength,start,duration):
 
-        if self.kind == "lif_cond":
-            if (start + duration) > self 
-            
-            current_inj = np.arange()
-
-            self.I_ext = stren
-
-    def run(self):
-        for i in range(self.steps):
-            for neuron in self.neurons:
-                neuron.update()
-
-                yield neuron
-
-    def record()
-
-# %% Dictionaries
-
-a = {}
-a['hello'] = [1]
-a['breh'] = [5]
-a['cool'] = [3]
-
-
-
-
-# %%
