@@ -171,10 +171,10 @@ spikes_e = make_spikes(50,52,30)
 spikes_i = make_spikes(70,72,3)
 
 # %%COBA
-ge_vec, gi_vec, u_vec, s_vec = LIF_COBA(spikes_e=spikes_e)
+ge_vec, gi_vec, u_vec, s_vec = LIF_COBA(spikes_e=spikes_e, w=0.016)
 
 # %%CUBA
-I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e)
+I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e,w=0.5)
 
 # %% PyNN CUBA
 # Setup
@@ -239,3 +239,15 @@ plt.plot(v_coba)
 # End
 sim.end()
 
+# class spike_array():
+#     def __init__(start,end,period,duration=100,step=0.1)
+
+    # spikes = np.zeros(int(duration/step))
+    #  start = int(start/step)
+    #  end = int(end/step)
+    #  period = (int(period/step))
+    #  spikes[start:end:period] = 1
+
+#     return spikes
+
+# %%

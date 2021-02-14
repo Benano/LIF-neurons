@@ -1,4 +1,4 @@
-# %% Simulation of LIF neuron interactions
+# %% Simulation of LIF
 import matplotlib.pyplot as plt
 
 # %% Classes
@@ -7,9 +7,13 @@ class sim:
         self.increment = increment
 
     neurons = []
+    synapses = []
 
     def add_neuron(self,neuron):
         self.neurons.append(neuron)
+
+    def add_synapse(self,synapse):
+        self.synapses.append(synapse)
         
     def run(self,duration):
         # MS conversion
@@ -17,6 +21,14 @@ class sim:
         for i in range(steps):
             for neuron in sim.neurons:
                 neuron.update(self.increment)
+                # For synapse in synapses
+                   
+class synapse():
+    def __init__(self,pre,post):
+        self.pre = pre
+        self.post = post
+
+        
 
 class neuron():
     def __init__(self,tau_m=20,cm=1,tau_syn=5,E_rest=-65,v_reset=-65,tau_refrac=0.1,v_thresh=-50): # Attributes shared by all
@@ -58,7 +70,7 @@ class lif_coba(neuron):
         
         # Refractory Period
         if 1 in self.s_ts[-(int(self.tau_refrac/increment)):]:
-            self.u = self.E_rest
+            self.u = self.v_reset
 
         self.u_ts.append(self.u)
 
@@ -85,14 +97,15 @@ class lif_cuba(neuron):
         
         # Refractory Period
         if 1 in self.s_ts[-(int(self.tau_refrac/increment)):]:
-            u = self.E_rest
+            u = self.v_reset
         
         self.u_ts.append(self.u)
 
+
+# %% 
 sim1 = sim(0.1)
-n1 = lif_coba(E_rest=-45)
+n1 = lif_cuba(I_ext=1)
 sim1.add_neuron(n1)
 sim1.run(100)
 
-
-# %%
+plt.plot(n1.u_ts)
