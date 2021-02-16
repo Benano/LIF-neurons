@@ -167,14 +167,14 @@ def LIF_COBA(spikes_e=np.zeros(1),spikes_i=np.zeros(1),duration=100,step=0.1,cm=
 
 # %% Simulation
 
-spikes_e = make_spikes(50,52,30)
+spikes_e = make_spikes(50,100,10)
 spikes_i = make_spikes(70,72,3)
 
 # %%COBA
 ge_vec, gi_vec, u_vec, s_vec = LIF_COBA(spikes_e=spikes_e, w=0.016)
 
 # %%CUBA
-I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e,w=0.5)
+I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e)
 
 # %% PyNN CUBA
 # Setup
@@ -182,8 +182,7 @@ sim.setup(timestep=0.1, min_delay=0.1, max_delay=10.0)
 IF_sim = sim.Population(1, sim.IF_curr_exp(), label="IF_curr_exp")
 IF_sim.record('v')
 
-spike_times = [20]
-# spike_times = np.arange(40,60,5)
+spike_times = np.arange(50,100,10)
 spike_input = sim.Population(1,sim.SpikeSourceArray(spike_times=spike_times),label="Input spikes")
 
 # Connections
