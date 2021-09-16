@@ -178,23 +178,23 @@ I_vec, u_vec, s_vec  = LIF_CUBA(spikes=spikes_e)
 
 # %% PyNN CUBA
 # Setup
-sim.setup(timestep=0.1, min_delay=0.1, max_delay=10.0)
-IF_sim = sim.Population(1, sim.IF_curr_exp(), label="IF_curr_exp")
+sim.setup(timestep=0.01, min_delay=0.1, max_delay=10.0)
+IF_sim = sim.Population(1, sim.IF_curr_exp(i_offset=30.000000000001,tau_m=0.5,cm=1,tau_refrac=1), label="IF_curr_exp")
 IF_sim.record('v')
 
-spike_times = np.arange(50,100,10)
-spike_input = sim.Population(1,sim.SpikeSourceArray(spike_times=spike_times),label="Input spikes")
+# spike_times = np.arange(50,100,10)
+# spike_input = sim.Population(1,sim.SpikeSourceArray(spike_times=spike_times),label="Input spikes")
 
 # Connections
-w = 1
-connections = sim.Projection(spike_input, IF_sim,
-                            connector=sim.AllToAllConnector(),
-                            synapse_type=sim.StaticSynapse(weight=w,delay=0.1),
-                            receptor_type="excitatory")
+# w = 1
+# connections = sim.Projection(spike_input, IF_sim,
+#                             connector=sim.AllToAllConnector(),
+#                             synapse_type=sim.StaticSynapse(weight=w,delay=0.1),
+#                             receptor_type="excitatory")
 
 # Running simulation in MS
 IF_sim.record('v')
-sim.run(100.0)
+sim.run(1000)
 
 # Data 
 v_data = IF_sim.get_data()   
